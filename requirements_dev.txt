@@ -1,5 +1,5 @@
-black=21.5b1
-mypy=0.812
-flake8=3.9.2
-pytest=6.2.4
-pre-commit=2.12.1
+black==21.5b1
+mypy==0.812
+flake8==3.9.2
+pytest==6.2.4
+pre-commit==2.12.1

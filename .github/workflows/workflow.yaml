@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.6, 3.7, 3.8, 3.9]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,10 +22,10 @@ jobs:
       - name: install
         run: poetry install
       - name: flake8
-        run: poetry run flake8
+        run: poetry run flake8 tests/ louis/
       - name: mypy
-        run: poetry run mypy .
+        run: poetry run mypy tests/ louis/
       - name: black
-        run: poetry run black . --check
+        run: poetry run black tests/ louis/ --check
       - name: test
-        run: poetry run pytest tests/ -v
+        run: poetry run pytest tests/ -vv
