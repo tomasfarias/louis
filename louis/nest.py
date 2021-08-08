@@ -20,14 +20,26 @@ def configure_logging(debug: bool):
     logger.addHandler(handler)
 
 
-def run():
+def run() -> typing.Union[int, str]:
     """Run the main CLI to nest JSON values"""
     parsed = parse_args(sys.argv[1:])
-    json_array = json.load(parsed.json)
     configure_logging(parsed.debug)
+
+    if parsed.json is None:
+        return "error: JSON file could not be read"
+
+    json_array = json.load(parsed.json)
     logging.debug("Read JSON array: %s", json_array)
-    sys.stdout.write(json.dumps(process_json_array(json_array, *parsed.keys), indent=4))
+
+    if len(parsed.keys) == 0:
+        # Nothing to do, we return the JSON array as given
+        json_str = json.dumps(json_array, indent=4)
+    else:
+        json_str = json.dumps(process_json_array(json_array, *parsed.keys), indent=4)
+
+    sys.stdout.write(json_str)
     sys.stdout.flush()
+    return 0
 
 
 def process_json_array(
@@ -69,16 +81,24 @@ def nest_json(
     """
     keys_copy = copy.deepcopy(keys)
     key = keys_copy.pop(0)
-    value = json_dict.pop(key)
-    if len(keys_copy) == 0:
-        if value in results.keys():
-            results[value].append(json_dict)
+
+    try:
+        value = json_dict.pop(key)
+    except KeyError:
+        if len(keys_copy) > 0:
+            nest_json(json_dict, keys_copy, results)
         else:
-            results[value] = [json_dict]
+            return json_dict
     else:
-        if value not in results.keys():
-            results[value] = {}
-        nest_json(json_dict, keys_copy, results[value])
+        if len(keys_copy) == 0:
+            if value in results.keys():
+                results[value].append(json_dict)
+            else:
+                results[value] = [json_dict]
+        else:
+            if value not in results.keys():
+                results[value] = {}
+            nest_json(json_dict, keys_copy, results[value])
 
 
 def parse_args(args: typing.List[str]):

@@ -1,57 +1,6 @@
 import json
 
-import pytest
-
 from louis.nest import parse_args, process_json_array
-
-CONTENT = """
-[
-  {
-    "country": "US",
-    "city": "Boston",
-    "currency": "USD",
-    "amount": 100
-  },
-  {
-    "country": "FR",
-    "city": "Paris",
-    "currency": "EUR",
-    "amount": 20
-  },
-  {
-    "country": "FR",
-    "city": "Lyon",
-    "currency": "EUR",
-    "amount": 11.4
-  },
-  {
-    "country": "ES",
-    "city": "Madrid",
-    "currency": "EUR",
-    "amount": 8.9
-  },
-  {
-    "country": "UK",
-    "city": "London",
-    "currency": "GBP",
-    "amount": 12.2
-  },
-  {
-    "country": "UK",
-    "city": "London",
-    "currency": "FBP",
-    "amount": 10.9
-  }
-]
-"""
-
-
-@pytest.fixture(scope="session")
-def sample_json(tmp_path_factory):
-    d = tmp_path_factory.mktemp("sample")
-    p = d / "sample.json"
-    p.write_text(CONTENT)
-    return p
 
 
 def test_parse_args(sample_json):
@@ -129,3 +78,39 @@ def test_process_json_array_one_key(sample_json):
     for key, values in nested.items():
         for json_dict in values:
             assert "city" not in json_dict.keys()
+
+
+def test_process_json_array_non_existent_key_start(sample_json):
+    keys = ["missing", "currency", "country"]
+    with open(sample_json) as f:
+        json_array = json.load(f)
+    nested = process_json_array(json_array, *keys)
+
+    expected = {
+        "USD": {"US": [{"city": "Boston", "amount": 100}]},
+        "EUR": {
+            "FR": [{"city": "Paris", "amount": 20}, {"city": "Lyon", "amount": 11.4}],
+            "ES": [{"city": "Madrid", "amount": 8.9}],
+        },
+        "GBP": {"UK": [{"city": "London", "amount": 12.2}]},
+        "FBP": {"UK": [{"city": "London", "amount": 10.9}]},
+    }
+    assert nested == expected
+
+
+def test_process_json_array_non_existent_key_middle(sample_json):
+    keys = ["currency", "missing", "country"]
+    with open(sample_json) as f:
+        json_array = json.load(f)
+    nested = process_json_array(json_array, *keys)
+
+    expected = {
+        "USD": {"US": [{"city": "Boston", "amount": 100}]},
+        "EUR": {
+            "FR": [{"city": "Paris", "amount": 20}, {"city": "Lyon", "amount": 11.4}],
+            "ES": [{"city": "Madrid", "amount": 8.9}],
+        },
+        "GBP": {"UK": [{"city": "London", "amount": 12.2}]},
+        "FBP": {"UK": [{"city": "London", "amount": 10.9}]},
+    }
+    assert nested == expected

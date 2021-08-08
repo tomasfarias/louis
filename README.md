@@ -213,6 +213,7 @@ In its current state the REST API is to be considered not more than a prototype,
 * On the topic of security, credentials are being fed from the environment. A proper secrets backend should be setup instead. Especially considering the secrets are exposed via `docker inspect <container id>`.
 * The API has no caching feature, which means that sending requests with the same inputs will trigger (perhaps unnecessary) re-computations.
 * Error handling on the API is bare-bones and should be extended.
+* There are some edge cases related to missing key sthat perhaps have not been properly handled and would require more rigorous testing.
 
 # License
 
