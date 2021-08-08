@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "python-package-template"
+name = "louis"
 version = "1.0.0"
-description = "A Python package template to jumpstart new projects"
+description = "Yet another challenge"
 authors = ["Tomás Farías Santana <tomas@tomasfarias.dev>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6.14"
 
 [tool.poetry.dev-dependencies]
 black = "^21.5b1"
