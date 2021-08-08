@@ -44,7 +44,7 @@ The second task was similar to the first one, but required obtaining the exchang
 SELECT * FROM total_spent_gbp_by_user_closest_rate;
 ```
 
-The query used to build this table is available in ![03_spend_breakdown_closest_date.sql](sql/02_spend_breakdown_closest_date.sql).
+The query used to build this table is available in ![03_spend_breakdown_closest_date.sql](sql/03_spend_breakdown_closest_date.sql).
 
 Although you may run the queries in the database provided, keep in mind that by this point the volume of data has been increased substantially for the third and final task. So the results will not be comparable to the results available in `total_spent_gbp_by_user_closest_rate`.
 

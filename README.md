@@ -10,7 +10,7 @@ Deploying Louis requires only installing `docker-compose` and `docker`. The foll
 * A PostgreSQL database containing the result of the analysis queries.
 * A REST API with a `nestme` endpoint that provides JSON nesting services.
 
-If choosing not to deploy with `docker` and `docker-compose`, the REST API does have some extra requirements as discussed in ![Deploying the REST API without docker](#deploying-the-rest-api-without-docker).
+If choosing not to deploy with `docker` and `docker-compose`, the REST API does have some extra requirements as discussed in ![Deploying the REST API without docker](README.md#deploying-the-rest-api-without-docker).
 
 Interfacing with the database may require a front-end tool to interact with the PostgreSQL database, like `psql`.
 
@@ -170,7 +170,7 @@ uvicorn louis.rest_api:app --host 0.0.0.0 --port 8080
 
 # Development
 
-This section describes development tools used for testing, linting, and static type checking. All tools are described in ![`requirements_dev.txt`](`requirements_dev.txt`).
+This section describes development tools used for testing, linting, and static type checking. All tools are described in ![`requirements_dev.txt`](requirements_dev.txt).
 
 ## Linting
 
@@ -196,6 +196,14 @@ To validate the type hints available in Louis, we can run `mypy`:
 
 ``` sh
 mypy louis/ tests/
+```
+
+## Git hooks
+
+We use `pre-commit` to manage `git` hooks to run all the aforementioned tools. You can do the same by installing the hooks:
+
+``` sh
+pre-commit install
 ```
 
 ## Limitations
