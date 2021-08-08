@@ -7,6 +7,7 @@ import typing
 
 
 def configure_logging(debug: bool):
+    """Configure root logger with stderr output"""
     formatter = logging.Formatter(
         fmt="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%S",
@@ -20,6 +21,7 @@ def configure_logging(debug: bool):
 
 
 def run():
+    """Run the main CLI to nest JSON values"""
     parsed = parse_args(sys.argv[1:])
     json_array = json.load(parsed.json)
     configure_logging(parsed.debug)
@@ -30,7 +32,19 @@ def run():
 
 def process_json_array(
     json_array: typing.List[typing.Dict[typing.Any, typing.Any]], *keys: str
-):
+) -> typing.Dict[typing.Any, typing.Any]:
+    """
+    Process a list of JSON-like dictionaries and recursively nest them according
+    to the given keys.
+
+    Args:
+    json_array: A list of JSON-like dictionaries.
+    keys: Variable number of keys to nest dictionaries. Dictionaries will be nested
+        in the same order as the keys.
+
+    Returns:
+    JSON-like dictionary nested by keys
+    """
     results: typing.Dict[typing.Any, typing.Any] = {}
     for json_dict in json_array:
         logging.debug("Processing JSON dictionary: %s", json_dict)
@@ -38,7 +52,21 @@ def process_json_array(
     return results
 
 
-def nest_json(json_dict, keys, results):
+def nest_json(
+    json_dict: typing.Dict[typing.Any, typing.Any],
+    keys: typing.List[str],
+    results: typing.Dict[typing.Any, typing.Any],
+):
+    """
+    Recursively nest a single JSON-like dictionary in results according to all
+    given keys.
+
+    Args:
+    json_dict: A JSON-like dictionary.
+    keys: Variable number of keys to nest the dictionary. Dictionary will be nested
+        in the same order as the keys.
+    results: A dictionary that will contain the nested structure.
+    """
     keys_copy = copy.deepcopy(keys)
     key = keys_copy.pop(0)
     value = json_dict.pop(key)
@@ -54,6 +82,7 @@ def nest_json(json_dict, keys, results):
 
 
 def parse_args(args: typing.List[str]):
+    """CLI argument parser"""
     parser = argparse.ArgumentParser(
         description="Group a JSON array by an arbitrary number of keys"
     )
