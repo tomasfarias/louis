@@ -26,7 +26,7 @@ def run():
     json_array = json.load(parsed.json)
     configure_logging(parsed.debug)
     logging.debug("Read JSON array: %s", json_array)
-    sys.stdout.write(json.dumps(process_json_array(json_array, *parsed.keys)))
+    sys.stdout.write(json.dumps(process_json_array(json_array, *parsed.keys), indent=4))
     sys.stdout.flush()
 
 
